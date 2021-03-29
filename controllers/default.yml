@@ -1,0 +1,48 @@
+# yaml
+
+- location: /docs
+  description: 基本APIドキュメント
+  services:
+    - method: GET
+      description: 基本APIドキュメントを表示
+      service_id: Document # Documentははやぶさエンジンの内装APIです
+      response:
+        - status_code: 200
+
+- location: /v1
+  description: サンプルAPIのベースパス
+  const_params:            # /v1/の下の全てのAPIに使う定数を定義
+    - name: cache_id       # キャッシュプラグインに使う。デフォルトキャッシュインスタンスのID
+      value: Cache
+  middlewares:             # /v1/の下の全てのAPIに適用するミドルウェア
+    - ResponseJSON         # 内装ミドルウェアで、リスポンスデータをJSON形式にする
+    - UseCache             # 名前が「Cache」のプラグインを導入。プラグインの定義はconfig-quickstart.ymlに定義
+    - HttpMiddleware       # アプリケーション層で実装したミドルウェア「HttpMiddleware」
+
+- location: /v1/foo
+  description: テストAPIのパス
+  services:
+    - method: GET
+      description: テストGETメソッドAPI
+      service_id: HttpGetAPI
+      response:            # responseはAPIドキュメントを生成する為のフィールドで、サーバー動作に影響がありません
+        - status_code: 200
+          description: 現在Sum値を返す
+          fields:
+            - name: sum
+              description: 現在Sum値
+              example: 5
+    - method: POST
+      description: テストPOSTメソッドAPI
+      form_args:
+        - name: x
+          description: 足し数
+          example: 2
+      service_id: HttpPostAPI
+      response:
+        - status_code: 200
+          description: Sumにxを足して新しいSum数を返す
+          fields:
+            - name: sum
+              descrpition: 新しいSum数
+              example: 5

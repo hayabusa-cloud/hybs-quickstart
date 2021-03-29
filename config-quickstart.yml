@@ -1,0 +1,20 @@
+# yaml
+
+app_name: hayabusa-quickstart
+version: 0.0.0
+env: local
+debug_mode: false
+
+cache:
+  - id: Cache
+
+http_server:
+  - id: quickstart
+    http_version: 1.1
+    network: tcp
+    address: localhost:8088
+    use_tls: false
+    read_timeout: 5s
+    write_timeout: 1s
+    compress_level: 5
+    controller_filepath: ./controllers/
